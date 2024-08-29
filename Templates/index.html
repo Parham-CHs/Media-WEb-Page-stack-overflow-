@@ -25,7 +25,7 @@
 
 
 <body>
-                    <a class="custom-btn btn-5" style="padding: 0; margin: 15px;" href="#" onclick="logout()">Log Out</a>
+                    <a class="custom-btn btn-5" style="padding: 0; margin: 15px;   position: absolute;  right: 0;" href="#" onclick="logout()">Log Out</a>
 
                     <h1>Welcome to the Forum</h1>
     
@@ -36,15 +36,17 @@
                             <h3>{{ post['title'] }}</h3>
                             <p>By {{ post['author'] }}</p>
                             <p>{{ post['content'] }}</p>
-                            <form action="/comment/{{ loop.index0 }}" method="post">
-                                <input type="text" name="comment" placeholder="Your comment">
-                                <button type="submit">Comment</button>
-                            </form>
                             <ul>
+                                <h3>comments</h3>
                                 {% for comment in post['comments'] %}
                                 <li>{{ comment }}</li>
                                 {% endfor %}
                             </ul>
+                            </br>
+                            <form action="/comment/{{ loop.index0 }}" method="post">
+                                <input type="text" name="comment" placeholder="Your comment">
+                                <button type="submit">Comment</button>
+                            </form>
                         </li>
                         {% endfor %}
                     </ul>

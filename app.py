@@ -1,17 +1,52 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 import secrets
-
+import os
 import pandas as pd
+
 
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
-# Dummy data for demonstration (you would replace this with a database)
-posts = [
-    {'author': 'John Doe', 'title': 'First Post', 'content': 'This is my first post!', 'comments': []},
-    {'author': 'Jane Smith', 'title': 'Second Post', 'content': 'Another post here', 'comments': []}
-]
+
+CSV_FILE = './data/posts.csv'
+
+def load_posts():
+    if os.path.exists(CSV_FILE):
+        df = pd.read_csv(CSV_FILE)
+        posts = df.to_dict(orient='records')
+        for post in posts:
+            post['comments'] = post['comments'].split('|') if pd.notna(post['comments']) else []
+    else:
+        posts = []
+    return posts
+
+def save_posts(posts):
+    df = pd.DataFrame(posts)
+    df['comments'] = df['comments'].apply(lambda x: '|'.join(x) if isinstance(x, list) else '')
+    df.to_csv(CSV_FILE, index=False)
+
+# Load posts at the start
+posts = load_posts()
+
+
+@app.route('/create', methods=['POST'])
+def create_post():
+    author = request.form['author']
+    title = request.form['title']
+    content = request.form['content']
+    post = {'author': author, 'title': title, 'content': content, 'comments': []}
+    posts.append(post)
+    save_posts(posts)
+    return redirect(url_for('index'))
+
+@app.route('/comment/<int:post_id>', methods=['POST'])
+def comment(post_id):
+    comment = request.form['comment']
+    posts[post_id]['comments'].append(comment)
+    save_posts(posts)
+    return redirect(url_for('index'))
+
 
 @app.route('/')
 @app.route('/index')
@@ -82,24 +117,6 @@ def register_post():
     # Save the updated DataFrame back to the CSV file
     df.to_csv('./Data/user_credentials.csv', index=False)
     return redirect('/login')
-
-
-# Route to handle post creation
-@app.route('/create', methods=['POST'])
-def create_post():
-    author = request.form['author']
-    title = request.form['title']
-    content = request.form['content']
-    post = {'author': author, 'title': title, 'content': content, 'comments': []}
-    posts.append(post)
-    return redirect('index')
-
-# Route to handle commenting
-@app.route('/comment/<int:post_id>', methods=['POST'])
-def comment(post_id):
-    comment = request.form['comment']
-    posts[post_id]['comments'].append(comment)
-    return redirect('index')
 
 
 if __name__ == "__main__":
