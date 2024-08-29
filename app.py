@@ -35,17 +35,43 @@ def create_post():
     author = request.form['author']
     title = request.form['title']
     content = request.form['content']
-    post = {'author': author, 'title': title, 'content': content, 'comments': []}
+    
+    # Generate new ID
+    if posts:
+        new_id = max([post['id'] for post in posts]) + 1
+    else:
+        new_id = 1
+
+    post = {'id': new_id, 'author': author, 'title': title, 'content': content, 'comments': []}
     posts.append(post)
     save_posts(posts)
     return redirect(url_for('index'))
 
+
 @app.route('/comment/<int:post_id>', methods=['POST'])
 def comment(post_id):
     comment = request.form['comment']
-    posts[post_id]['comments'].append(comment)
+
+    # Find the post by ID
+    for post in posts:
+        if post['id'] == post_id:
+            post['comments'].append(comment)
+            break
+            
+    # Save posts to the CSV file
     save_posts(posts)
-    return redirect(url_for('index'))
+    
+    # Redirect back to the post detail page
+    return redirect(url_for('post_detail', post_id=post_id))
+
+
+@app.route('/post/<int:post_id>')
+def post_detail(post_id):
+    # Find the post with the given id
+    post = next((post for post in posts if post['id'] == post_id), None)
+    if post is None:
+        return "Post not found", 404
+    return render_template('post_detail.html', post=post)
 
 
 @app.route('/')
