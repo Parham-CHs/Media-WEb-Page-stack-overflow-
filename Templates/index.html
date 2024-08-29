@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Load Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='./css/log-out.css') }}" rel="stylesheet" type="text/css">
+
+
+</head>
+
+<script>
+    function logout() {
+        // Clear localStorage or cookies
+        localStorage.clear(); // Clear all local storage data
+        document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Clear a specific cookie
+
+        // Redirect to login page
+        window.location.href = "/login";
+    }
+</script>
+
+
+<body>
+                    <a class="custom-btn btn-5" style="padding: 0; margin: 15px;" href="#" onclick="logout()">Log Out</a>
+
+                    <h1>Welcome to the Forum</h1>
+    
+                    <h2>Recent Posts</h2>
+                    <ul>
+                        {% for post in posts %}
+                        <li>
+                            <h3>{{ post['title'] }}</h3>
+                            <p>By {{ post['author'] }}</p>
+                            <p>{{ post['content'] }}</p>
+                            <form action="/comment/{{ loop.index0 }}" method="post">
+                                <input type="text" name="comment" placeholder="Your comment">
+                                <button type="submit">Comment</button>
+                            </form>
+                            <ul>
+                                {% for comment in post['comments'] %}
+                                <li>{{ comment }}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                
+                    <h2>Create a New Post</h2>
+                    <form action="/create" method="post">
+                        <input type="text" name="author" placeholder="Your name"><br>
+                        <input type="text" name="title" placeholder="Title"><br>
+                        <textarea name="content" placeholder="Post content"></textarea><br>
+                        <button type="submit">Create Post</button>
+                    </form>
+
+</body>
+</html>
