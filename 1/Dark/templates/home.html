@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome, [Username]</h2>
+        <div class="new-post">
+            <h3>Create a New Post</h3>
+            <form action="#" method="post">
+                <textarea name="postContent" placeholder="What's on your mind?" required></textarea>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+        <div class="posts">
+            <h3>Recent Posts</h3>
+            <div class="post">
+                <p>This is a sample post. You can comment below.</p>
+                <div class="comments">
+                    <form action="#" method="post">
+                        <input type="text" name="comment" placeholder="Write a comment..." required>
+                        <button type="submit">Comment</button>
+                    </form>
+                    <p><strong>User1:</strong> Nice post!</p>
+                </div>
+            </div>
+            <div class="post">
+                <p>Another sample post.</p>
+                <div class="comments">
+                    <form action="#" method="post">
+                        <input type="text" name="comment" placeholder="Write a comment..." required>
+                        <button type="submit">Comment</button>
+                    </form>
+                    <p><strong>User2:</strong> I agree!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
